@@ -7,32 +7,45 @@ import (
 	"os"
 )
 
-// CheckConnection tests the connection to OpenWeatherMap
-func CheckConnection() {
+// FetchWeather gets the weather data for a specific city from OpenWeatherMap
+func FetchWeather(city string) (Response, error) {
+	var data Response
 	apiKey := os.Getenv("OPENWEATHER_API_KEY")
-	city := os.Getenv("WEATHER_CITY")
 
-	if apiKey == "" || city == "" {
-		fmt.Println("Missing OPENWEATHER_API_KEY or WEATHER_CITY environment variables")
-		return
+	if apiKey == "" {
+		return data, fmt.Errorf("missing OPENWEATHER_API_KEY environment variable")
 	}
+
 	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", city, apiKey)
 
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Printf("request error: %v\n", err)
-		return
+		return data, fmt.Errorf("request error: %v", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		fmt.Printf("the server responded with code: %d \n", resp.StatusCode)
+		return data, fmt.Errorf("the server responded with code: %d", resp.StatusCode)
+	}
+
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return data, fmt.Errorf("error parsing JSON: %v", err)
+	}
+
+	return data, nil
+}
+
+// CheckConnection tests the connection to OpenWeatherMap
+func CheckConnection() {
+	city := os.Getenv("WEATHER_CITY")
+	if city == "" {
+		fmt.Println("Missing WEATHER_CITY environment variable")
 		return
 	}
 
-	var data Response
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		fmt.Printf("error parsing JSON: %v\n", err)
+	data, err := FetchWeather(city)
+	if err != nil {
+		fmt.Printf("connection check failed: %v\n", err)
 		return
 	}
 
