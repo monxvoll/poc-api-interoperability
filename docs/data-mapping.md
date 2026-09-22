@@ -8,6 +8,7 @@ classDiagram
         +String weather_main "e.g., 'Clouds'"
         +String weather_description "e.g., 'broken clouds'"
         +Float temp_celsius "e.g., 20.0"
+        +Float feels_like "e.g., 22.5"
         +Int humidity
     }
     
@@ -51,7 +52,7 @@ mindmap
       Rain / Thunderstorm
         Mood: Tense / Melancholic
         Mechanics: Slippery terrain, thunder audio cues, fire magic is weakened
-    Temperature (Celsius)
+    Feels Like Temperature (Celsius)
       Below 0°C (Freezing)
         Mood: Survival / Harsh
         Mechanics: Slower movement, need warm clothing, snow textures
