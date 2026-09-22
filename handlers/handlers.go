@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"os"
 	"poc-api-interoperability/middleware"
 	"poc-api-interoperability/weather"
 
@@ -26,14 +25,11 @@ func PingHandler(c *gin.Context) {
 
 // GameContextHandler handles the /game-context route
 func GameContextHandler(c *gin.Context) {
-	// Try to get city from query parameters, fallback to env variable
+	// Get city from query parameters
 	city := c.Query("city")
-	if city == "" {
-		city = os.Getenv("WEATHER_CITY")
-	}
 	
 	if city == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "City must be provided either as a query parameter '?city=Name' or in the WEATHER_CITY env variable"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "City must be provided as a query parameter '?city=Name'"})
 		return
 	}
 
@@ -47,6 +43,13 @@ func GameContextHandler(c *gin.Context) {
 	// 2. Translate the raw data into our game domain model
 	gameContext := middleware.TranslateWeatherToGameMood(weatherData)
 
-	// 3. Return the standardized game context
-	c.JSON(http.StatusOK, gameContext)
+	// 3. Create a combined response
+	response := gin.H{
+		"city":         weatherData.Name,
+		"weather_data": weatherData,
+		"game_mood":    gameContext,
+	}
+
+	// 4. Return the standardized game context and actual weather
+	c.JSON(http.StatusOK, response)
 }
