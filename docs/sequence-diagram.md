@@ -10,10 +10,10 @@ sequenceDiagram
     participant Translator as Data Translator (Adapter)
     participant OpenWeather as OpenWeather API
 
-    Client->>GinServer: GET /game-mood?city=London
+    Client->>GinServer: GET /game-context?city=London
     activate GinServer
     
-    GinServer->>WeatherService: GetMoodForCity("London")
+    GinServer->>WeatherService: FetchWeather("London")
     activate WeatherService
     
     WeatherService->>OpenWeather: GET /weather?q=London&appid=...
@@ -29,9 +29,9 @@ sequenceDiagram
     Translator-->>WeatherService: Standardized Game Mood Data
     deactivate Translator
     
-    WeatherService-->>GinServer: Game Mood Data
+    WeatherService-->>GinServer: Game Mood Data (Translated)
     deactivate WeatherService
     
-    GinServer-->>Client: 200 OK (Game Mood JSON)
+    GinServer-->>Client: 200 OK (Raw Weather + Game Mood JSON)
     deactivate GinServer
 ```
