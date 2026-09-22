@@ -53,5 +53,3 @@ go run main.go
 ```
 
 The server will start on port 8080.
-
-```
