@@ -15,8 +15,8 @@ func TranslateWeatherToGameMood(w weather.Response) models.GameMoodData {
 		condition = w.Weather[0].Main
 	}
 
-	// Calculate temperature in Celsius
-	tempC := w.Main.Temp - 273.15
+	// The API is now configured to return data in metric (Celsius) natively
+	feelsLikeC := w.Main.FeelsLike
 
 	// 1. Map Theme and Color Palette based on condition
 	switch condition {
@@ -47,14 +47,14 @@ func TranslateWeatherToGameMood(w weather.Response) models.GameMoodData {
 	// 2. Map Fog Density based on humidity
 	mood.Environment.FogDensity = float32(w.Main.Humidity) / 100.0
 
-	// 3. Map Player Stats based on temperature
+	// 3. Map Player Stats based on how the temperature *feels*
 	mood.Stats.StaminaDrainRate = 1.0
 	mood.Stats.MovementSpeed = 1.0
 
-	if tempC > 30.0 {
+	if feelsLikeC > 30.0 {
 		// Hot weather increases stamina drain
 		mood.Stats.StaminaDrainRate = 1.5
-	} else if tempC < 0.0 {
+	} else if feelsLikeC < 0.0 {
 		// Freezing weather reduces movement speed
 		mood.Stats.MovementSpeed = 0.8
 	}
