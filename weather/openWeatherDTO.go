@@ -7,8 +7,9 @@ type Response struct {
 	} `json:"weather"`
 
 	Main struct {
-		Temp     float64 `json:"temp"`
-		Humidity int     `json:"humidity"`
+		Temp      float64 `json:"temp"`
+		FeelsLike float64 `json:"feels_like"`
+		Humidity  int     `json:"humidity"`
 	} `json:"main"`
 	Name string `json:"name"`
 }

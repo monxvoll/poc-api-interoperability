@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"poc-api-interoperability/handlers"
-	"poc-api-interoperability/weather"
+
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -16,7 +16,6 @@ func main() {
 		log.Println("No .env file found, relying on environment variables")
 	}
 
-	weather.CheckConnection()
 
 	r := gin.Default()
 
