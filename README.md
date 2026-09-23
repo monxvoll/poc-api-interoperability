@@ -37,7 +37,6 @@ The application requires environment variables to connect to the external weathe
 
 ```env
 OPENWEATHER_API_KEY=your_api_key_here
-WEATHER_CITY=London
 ```
 
 ## Running the Application
@@ -53,3 +52,46 @@ go run main.go
 ```
 
 The server will start on port 8080.
+
+## Endpoints
+
+### 1. Ping
+A simple health check endpoint.
+```bash
+curl http://localhost:8080/ping
+```
+
+### 2. Game Context
+Fetches the current weather for a specified city and translates it into a game mood context. Requires the `city` query parameter.
+```bash
+curl "http://localhost:8080/game-context?city=London"
+```
+
+**Response Example:**
+```json
+{
+  "city": "London",
+  "game_mood": {
+    "Theme": "Gloomy",
+    "ColorPalette": "Dark_Blue_And_Grey",
+    "Environment": {
+      "SkyboxTexture": "sky_stormy.png",
+      "FogDensity": 0.82,
+      "WeatherParticleEffect": "particles_rain"
+    },
+    "Stats": {
+      "StaminaDrainRate": 1,
+      "MovementSpeed": 1
+    }
+  },
+  "weather_data": {
+    "weather": [...],
+    "main": {
+      "temp": 14.5,
+      "feels_like": 13.2,
+      "humidity": 82
+    },
+    "name": "London"
+  }
+}
+```
